@@ -1,7 +1,7 @@
 import css from './ContactForm.module.css';
 // import PropTypes from 'prop-types';
 
-export default function ContactForm({}) {
+export default function ContactForm() {
   return (
     <form className={css.contactForm}>
       <label>Name</label>
