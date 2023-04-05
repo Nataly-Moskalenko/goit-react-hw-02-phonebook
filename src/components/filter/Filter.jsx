@@ -1,5 +1,5 @@
 import css from './Filter.module.css';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 
 export default function Filter({ value, handleChange }) {
@@ -19,3 +19,8 @@ export default function Filter({ value, handleChange }) {
     </div>
   );
 }
+
+Filter.propTypes = {
+  value: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired,  
+};

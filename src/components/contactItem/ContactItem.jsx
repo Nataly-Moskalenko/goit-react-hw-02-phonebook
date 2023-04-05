@@ -1,5 +1,5 @@
 import css from './ContactItem.module.css';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 export default function ContactItem({ name, number, id, onDeleteContact }) {
   return (
@@ -17,3 +17,9 @@ export default function ContactItem({ name, number, id, onDeleteContact }) {
   );
 }
 
+ContactItem.propTypes = {
+  name: PropTypes.string.isRequired,
+  number: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  onDeleteContact: PropTypes.func.isRequired,
+};
