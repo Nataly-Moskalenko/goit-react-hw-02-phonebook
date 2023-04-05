@@ -1,23 +1,19 @@
 // import css from './Filter.module.css';
 // import PropTypes from 'prop-types';
-import { Component } from 'react';
+// import { Component } from 'react';
+import { nanoid } from 'nanoid';
 
-export default class Filter extends Component {
-  state = {
-    inputValue: '',
-  };
-
-  handleChange = evt => {
-    this.setState({ inputValue: evt.target.value });
-  };
-
-  render() {
-    const { inputValue } = this.state;
-    return (
-      <div>
-        <label>Find contacts by name</label>
-        <input type="text" value={inputValue} onChange={this.handleChange} />
-      </div>
-    );
-  }
+export default function Filter({ value, handleChange }) {
+  const nameInputValue = nanoid();
+  return (
+    <div>
+      <label htmlFor={nameInputValue}>Find contacts by name</label>
+      <input
+        id={nameInputValue}
+        type="text"
+        value={value}
+        onChange={handleChange}
+      />
+    </div>
+  );
 }

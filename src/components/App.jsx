@@ -15,20 +15,28 @@ export class App extends Component {
     filter: '',
   };
 
-  onDeleteContact = id => {
+  deleteContact = id => {
     this.setState(prevState => ({
       contacts: prevState.contacts.filter(contact => contact.id !== id),
     }));
   };
 
-  onAddContact = data => {
-    const newContact = { id: nanoid(), name: data.name, number: data.number };    
+  addContact = data => {
+    const newContact = { id: nanoid(), name: data.name, number: data.number };
     this.setState(prevState => ({
       contacts: [newContact, ...prevState.contacts],
-    }));   
+    }));
+  };
+
+  changeFilter = evt => {
+    this.setState({ filter: evt.target.value });
   };
 
   render() {
+    const normalizedFilter = this.state.filter.toLowerCase();
+    const visibleContacts = this.state.contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
     return (
       <div
         style={{
@@ -43,12 +51,15 @@ export class App extends Component {
         }}
       >
         <h1>Phonebook</h1>
-        <ContactForm onSubmit={this.onAddContact}></ContactForm>
+        <ContactForm onSubmit={this.addContact}></ContactForm>
         <h2>Contacts</h2>
-        <Filter />
+        <Filter
+          value={this.state.filter}
+          handleChange={this.changeFilter}
+        ></Filter>
         <ContactList
-          contacts={this.state.contacts}
-          onDeleteContact={this.onDeleteContact}
+          contacts={visibleContacts}
+          onDeleteContact={this.deleteContact}
         ></ContactList>
       </div>
     );
