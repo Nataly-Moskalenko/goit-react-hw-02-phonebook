@@ -22,45 +22,49 @@ export class App extends Component {
   };
 
   addContact = data => {
+    const { contacts } = this.state;
     const newContact = { id: nanoid(), name: data.name, number: data.number };
-    this.setState(prevState => ({
-      contacts: [newContact, ...prevState.contacts],
-    }));
+    if (contacts.find(contact => contact.name === newContact.name)) {
+      window.alert(`${newContact.name} is already in contacts`);
+    } else {
+      this.setState(prevState => ({
+        contacts: [newContact, ...prevState.contacts],
+      }));
+    }
   };
 
-  changeFilter = evt => {
-    this.setState({ filter: evt.target.value });
+  changeFilter = e => {
+    this.setState({ filter: e.currentTarget.value });
+  };
+
+  getVisibleContacts = () => {
+    const { contacts, filter } = this.state;
+    const normalizedFilter = filter.toLowerCase();
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
   };
 
   render() {
-    const normalizedFilter = this.state.filter.toLowerCase();
-    const visibleContacts = this.state.contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizedFilter)
-    );
+    const { filter } = this.state;
+    const visibleContacts = this.getVisibleContacts();
     return (
       <div
         style={{
           height: '100vh',
           marginLeft: '40px',
-          // display: 'flex',
-          // flexDirection: 'column',
-          // justifyContent: 'center',
-          // alignItems: 'center',
-          fontSize: 30,
+          fontSize: 20,
           color: '#010101',
         }}
       >
         <h1>Phonebook</h1>
-        <ContactForm onSubmit={this.addContact}></ContactForm>
+        <ContactForm onSubmit={this.addContact} />
         <h2>Contacts</h2>
-        <Filter
-          value={this.state.filter}
-          handleChange={this.changeFilter}
-        ></Filter>
+        <Filter value={filter} handleChange={this.changeFilter} />
         <ContactList
           contacts={visibleContacts}
           onDeleteContact={this.deleteContact}
-        ></ContactList>
+        />
       </div>
     );
   }
