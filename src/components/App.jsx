@@ -21,9 +21,13 @@ export class App extends Component {
     }));
   };
 
-  addContact = data => {
+  addContact = (values, { resetForm }) => {
     const { contacts } = this.state;
-    const newContact = { id: nanoid(), name: data.name, number: data.number };
+    const newContact = {
+      id: nanoid(),
+      name: values.name,
+      number: values.number,
+    };
     if (contacts.find(contact => contact.name === newContact.name)) {
       window.alert(`${newContact.name} is already in contacts`);
     } else {
@@ -31,6 +35,7 @@ export class App extends Component {
         contacts: [newContact, ...prevState.contacts],
       }));
     }
+    resetForm();
   };
 
   changeFilter = e => {

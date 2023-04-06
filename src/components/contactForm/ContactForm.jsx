@@ -1,74 +1,82 @@
 import { nanoid } from 'nanoid';
 import css from './ContactForm.module.css';
-import { Component } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 
-const INITIAL_STATE = {
-  name: '',
-  number: '',
-};
-
-export default class ContactForm extends Component {
-  state = {
-    ...INITIAL_STATE,
+export default function ContactForm({ onSubmit }) {
+  const initialValues = {
+    name: '',
+    number: '',
   };
 
-  nameInputId = nanoid();
-  numberInputId = nanoid();
+  const nameInputId = nanoid();
+  const numberInputId = nanoid();
 
-  handleChange = e => {
-    const { name, value } = e.currentTarget;
-    this.setState({ [name]: value });
-  };
+  const patternName =
+    /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/;
+  const patternNumber =
+    /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
 
-  handleSubmit = e => {
-    e.preventDefault();
-    this.props.onSubmit(this.state);
-    this.reset();
-  };
+  const schema = Yup.object().shape({
+    name: Yup.string()
+      .max(20, 'Name too long!')
+      .matches(
+        patternName,
+        "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+      )
+      .required('Required'),
+    number: Yup.string()
+      .matches(
+        patternNumber,
+        'Phone number must be digits and can contain spaces, dashes, parentheses and can start with +'
+      )
+      .required('Required'),
+  });
 
-  reset = () => {
-    this.setState({ ...INITIAL_STATE });
-  };
-
-  render() {
-    const { name, number } = this.state;
-    return (
-      <form className={css.contactForm} onSubmit={this.handleSubmit}>
-        <label className={css.contactLabel} htmlFor={this.nameInputId}>
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={schema}
+      onSubmit={onSubmit}
+    >
+      <Form className={css.contactForm} autoComplete="off">
+        <label className={css.contactName} htmlFor={nameInputId}>
           Name
         </label>
-        <input
+        <Field
           className={css.contactInput}
           type="text"
           name="name"
-          id={this.nameInputId}
-          value={name}
-          onChange={this.handleChange}
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          id={nameInputId}
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
           required
         />
-        <label className={css.contactLabel} htmlFor={this.numberInputId}>
+        <ErrorMessage
+          name="name"
+          render={msg => <div className={css.contactError}>{msg}</div>}
+        />
+        <label className={css.contactNumber} htmlFor={numberInputId}>
           Number
         </label>
-        <input
+        <Field
           className={css.contactInput}
           type="tel"
           name="number"
-          id={this.numberInputId}
-          value={number}
-          onChange={this.handleChange}
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+          id={numberInputId}
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required
+        />
+        <ErrorMessage
+          name="number"
+          render={msg => <div className={css.contactError}>{msg}</div>}
         />
         <button className={css.contactAddButton} type="submit">
           Add contact
         </button>
-      </form>
-    );
-  }
+      </Form>
+    </Formik>
+  );
 }
 
 ContactForm.propTypes = {
