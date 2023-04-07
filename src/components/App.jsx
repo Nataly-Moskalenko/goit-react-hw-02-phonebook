@@ -23,24 +23,17 @@ export class App extends Component {
 
   addContact = (values, { resetForm }) => {
     const { contacts } = this.state;
-    const titleCase = values.name
-    .toLowerCase()
-    .split(' ')
-    .map(word => {
-      return word.charAt(0).toUpperCase() + word.slice(1);
-    })
-    .join(' ');
     const newContact = {
       id: nanoid(),
-      name: titleCase,    
+      name: values.name,
       number: values.number,
     };
     if (
       contacts.find(
-        contact => contact.name === newContact.name        
+        contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
       )
     ) {
-      window.alert(`${titleCase} is already in contacts`);
+      window.alert(`${newContact.name} is already in contacts`);
     } else {
       this.setState(prevState => ({
         contacts: [newContact, ...prevState.contacts],
